@@ -1,0 +1,10 @@
+<div ng-repeat="(key, value) in scientists">
+  <a ng-href="#/scientists/{{ $index }}">
+    <div ng-repeat="s in value">
+      <div class="col-md-4" style="height:150px;">
+        <h1 ng-bind="s.label"></h1>
+        <p ng-bind="s.field_label"></p>
+      </div>
+    </div>
+  </a>
+</div>
