@@ -1,4 +1,7 @@
+// define the angular app
 var scientistsApp = angular.module('scientistsApp', ['ngRoute', 'ngAnimate']);
+
+// configure client routes
 scientistsApp.config(function($routeProvider){
   $routeProvider
     .when('/scientists', {
@@ -13,25 +16,38 @@ scientistsApp.config(function($routeProvider){
       redirectTo: '/scientists'
     });
 });
-scientistsApp.controller('mainController', ['$scope','$http', function($scope, $http) {
-	// GET =====================================================================
-	// when landing on the page, get all scientists and show them
-	// use the service to get all the todos
 
+// main page controller
+scientistsApp.controller('mainController', ['$scope','$http', function($scope, $http) {
 }]);
 
 // retrieve all scientists in the scope
 scientistsApp.controller('listController', function($scope, $http){
+  $scope.loading = true;
   $http.get('../../dataset.json')
 		.success(function(data) {
 			$scope.scientists = data.instances;
+      $scope.loading = false;
 		});
 });
 
 // retrieve one scientist in the scope
 scientistsApp.controller('detailController', function($scope, $http, $routeParams){
+  $scope.loading = true;
   $http.get('../../dataset.json')
 		.success(function(data) {
 			$scope.scientist = data.instances[$routeParams.id];
+      $scope.loading = false;
 		});
+});
+
+scientistsApp.component('loadingAnimation', {
+  template: '<div class="science"><div class="ring-container"><span class="ring-grey"></span><span class="ring-orange"></span><span class="ring-blue"></span></div></div>'
+})
+
+scientistsApp.filter('cleanString', function () {
+  return function (input) {
+      input = input.toString().replace(/_/g, ' ');
+      return input.toString().replace(/,/g, ' | ');
+  };
 });

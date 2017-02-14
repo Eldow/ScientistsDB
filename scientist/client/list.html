@@ -1,9 +1,12 @@
+<loading-animation ng-if="loading"></loading-animation>
 <div ng-repeat="(key, value) in scientists">
   <a ng-href="#/scientists/{{ $index }}">
     <div ng-repeat="s in value">
-      <div class="col-md-4" style="height:150px;">
-        <h1 ng-bind="s.label"></h1>
-        <p ng-bind="s.field_label"></p>
+      <div class="col-md-4">
+        <div class="card shadow">
+          <h3 ng-bind="s.label"></h3>
+          <p ng-if="s.field_label!=='NULL'" ng-bind="s.field_label | cleanString | limitTo:150"></p>
+        </div>
       </div>
     </div>
   </a>
