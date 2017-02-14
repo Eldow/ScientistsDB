@@ -41,10 +41,12 @@ scientistsApp.controller('detailController', function($scope, $http, $routeParam
 		});
 });
 
+// the loading animation component
 scientistsApp.component('loadingAnimation', {
   template: '<div class="science"><div class="ring-container"><span class="ring-grey"></span><span class="ring-orange"></span><span class="ring-blue"></span></div></div>'
 })
 
+// this is used to clean messy strings
 scientistsApp.filter('cleanString', function () {
   return function (input) {
       input = input.toString().replace(/_/g, ' ');
