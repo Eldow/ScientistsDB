@@ -23,4 +23,14 @@ module.exports = function (app) {
             res.json(scientist);
         });
     });
+	
+	// GET all fields
+    app.get('/api/fields', function (req, res) {
+		Scientist.find().distinct('field_label', function(err, fields) {
+			if (err) {
+              res.send(err);
+            }
+            res.json(fields);
+		});
+    });
 };

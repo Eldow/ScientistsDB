@@ -12,8 +12,12 @@ scientistsApp.config(function($routeProvider){
       templateUrl: 'scientist/client/detail.html',
       controller: 'detailController'
     })
+	.when('/fields', {
+      templateUrl: 'scientist/client/field-list.html',
+      controller: 'fieldController'
+    })
     .otherwise({
-      redirectTo: '/scientists'
+      redirectTo: '/fields'
     });
 });
 
@@ -37,6 +41,16 @@ scientistsApp.controller('detailController', function($scope, $http, $routeParam
   $http.get('/api/scientists/'+$routeParams.id)
 		.success(function(data) {
 			$scope.scientist = data;
+      $scope.loading = false;
+		});
+});
+
+// retrieves all the fields
+scientistsApp.controller('fieldController', function($scope, $http){
+	$scope.loading = true;
+	  $http.get('/api/fields')
+		.success(function(data) {
+			$scope.fields = data;
       $scope.loading = false;
 		});
 });
