@@ -1,5 +1,5 @@
 <loading-animation ng-if="loading"></loading-animation>
-<h1> {{ fields.length}}
-<div ng-repeat="f in fields">
-{{f}}
+
+<div ng-repeat="f in fields | orderBy">
+  <h1><a ng-href="#/fields/{{f}}">{{f}}</a></h1>
 </div>

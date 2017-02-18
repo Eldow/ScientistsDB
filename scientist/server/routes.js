@@ -23,14 +23,44 @@ module.exports = function (app) {
             res.json(scientist);
         });
     });
-	
-	// GET all fields
-    app.get('/api/fields', function (req, res) {
-		Scientist.find().distinct('field_label', function(err, fields) {
-			if (err) {
+
+    // GET all nationalities
+    app.get('/api/nationalities', function (req, res) {
+        Scientist.find().distinct('nationality_label', function (err, nationalities) {
+            if (err) {
               res.send(err);
             }
-            res.json(fields);
-		});
+            res.json(nationalities);
+        });
     });
+
+    // GET scientists by nationality
+    app.get('/api/nationalities/:label', function (req, res) {
+        Scientist.find({'nationality_label':req.params.label}, function (err, scientists) {
+            if (err) {
+              res.send(err);
+            }
+            res.json(scientists);
+        });
+    });
+
+	// GET all fields
+    app.get('/api/fields', function (req, res) {
+		    Scientist.find().distinct('field_label', function(err, fields) {
+			       if (err) {
+               res.send(err);
+             }
+             res.json(fields);
+		    });
+    });
+
+    // GET scientist by field
+      app.get('/api/fields/:label', function (req, res) {
+  		    Scientist.find({'field_label': req.params.label }, function(err, scientists) {
+  			       if (err) {
+                 res.send(err);
+               }
+               res.json(scientists);
+  		    });
+      });
 };

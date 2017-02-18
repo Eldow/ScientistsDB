@@ -12,9 +12,21 @@ scientistsApp.config(function($routeProvider){
       templateUrl: 'scientist/client/detail.html',
       controller: 'detailController'
     })
-	.when('/fields', {
+	  .when('/fields', {
       templateUrl: 'scientist/client/field-list.html',
       controller: 'fieldController'
+    })
+    .when('/fields/:label', {
+      templateUrl: 'scientist/client/list.html',
+      controller: 'fieldListController'
+    })
+    .when('/nationalities',{
+      templateUrl : 'scientist/client/nationality-list.html',
+      controller: 'nationalityController'
+    })
+    .when('/nationalities/:label',{
+      templateUrl : 'scientist/client/list.html',
+      controller: 'nationalityListController'
     })
     .otherwise({
       redirectTo: '/fields'
@@ -46,11 +58,44 @@ scientistsApp.controller('detailController', function($scope, $http, $routeParam
 });
 
 // retrieves all the fields
-scientistsApp.controller('fieldController', function($scope, $http){
+scientistsApp.controller('fieldController', function($scope, $http, $filter){
 	$scope.loading = true;
 	  $http.get('/api/fields')
 		.success(function(data) {
-			$scope.fields = data;
+      var filterData = data.map(function(elem){
+        return $filter('cleanString')(elem);
+      });
+			$scope.fields = filterData;
+      $scope.loading = false;
+		});
+});
+
+// retrieve one scientist in the scope
+scientistsApp.controller('fieldListController', function($scope, $http, $routeParams){
+  $scope.loading = true;
+  $http.get('/api/fields/'+$routeParams.label)
+		.success(function(data) {
+			$scope.scientists = data;
+      $scope.loading = false;
+		});
+});
+
+// retrieves all the nationalities
+scientistsApp.controller('nationalityController', function($scope, $http){
+	$scope.loading = true;
+	  $http.get('/api/nationalities')
+		.success(function(data) {
+			$scope.nationalities = data;
+      $scope.loading = false;
+		});
+});
+
+// retrieves scientists by nationality
+scientistsApp.controller('nationalityListController', function($scope, $http, $routeParams){
+	$scope.loading = true;
+	  $http.get('/api/nationalities/'+$routeParams.label)
+		.success(function(data) {
+			$scope.scientists = data;
       $scope.loading = false;
 		});
 });
@@ -64,6 +109,8 @@ scientistsApp.component('loadingAnimation', {
 scientistsApp.filter('cleanString', function () {
   return function (input) {
       input = input.toString().replace(/_/g, ' ');
-      return input.toString().replace(/,/g, ' | ');
+      input = input.toString().replace(/,/g, ' | ');
+      input = input.trim();
+      return input.toString().substr(0, 1).toUpperCase() + input.toString().substr(1);
   };
 });

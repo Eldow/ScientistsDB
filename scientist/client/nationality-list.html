@@ -1,0 +1,5 @@
+<loading-animation ng-if="loading"></loading-animation>
+
+<div ng-repeat="n in nationalities | orderBy">
+  <h1><a ng-href="#/nationalities/{{n}}">{{n | cleanString}}</a></h1>
+</div>
