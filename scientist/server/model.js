@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 
 // create a schema
 var scientistSchema = new Schema({
+  label: String,
   description: String,
   birthDate: { type: Date, default: Date.now },
   deathDate: { type: Date, default: Date.now },
@@ -14,6 +15,7 @@ var scientistSchema = new Schema({
   academicAdvisor_label: [String],
   knownFor_label: [String],
   doctoralStudent_label: [String],
+  notableStudent_label: [String],
   spouse_label: [String],
   child_label: [String],
   influencedBy_label: [String],

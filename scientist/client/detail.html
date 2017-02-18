@@ -1,8 +1,2 @@
 <loading-animation ng-if="loading"></loading-animation>
-<div ng-repeat="s in scientist">
-  <div class="detail shadow">
-    <div class="row"><div class="col-md-12"><h1 ng-bind="s.label"></h1></div></div>
-    <div class="row"><div class="col-md-12"><p ng-if="s.field_label!=='NULL'" ng-bind="s.field_label | cleanString"></p></div></div>
-    <div class="row"><div class="col-md-12"><p ng-bind="s.birthPlace_label"></p></div></div>
-  </div>
-</div>
+{{scientist}}

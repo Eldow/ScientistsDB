@@ -15,13 +15,12 @@ module.exports = function (app) {
     });
 
     // POST a scientist - to fill the database
-    app.post('/api/scientists', function (req, res) {
-        Scientist.create({
-            name: req.body.text
-        }, function (err, todo) {
-            if (err)
-                res.send(err);
+    app.get('/api/scientists/:id', function (req, res) {
+        Scientist.findById(req.params.id, function (err, scientist) {
+            if (err) {
+              res.send(err);
+            }
+            res.json(scientist);
         });
-
     });
 };

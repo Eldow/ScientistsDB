@@ -24,9 +24,9 @@ scientistsApp.controller('mainController', ['$scope','$http', function($scope, $
 // retrieve all scientists in the scope
 scientistsApp.controller('listController', function($scope, $http){
   $scope.loading = true;
-  $http.get('../../dataset.json')
+  $http.get('/api/scientists')
 		.success(function(data) {
-			$scope.scientists = data.instances;
+			$scope.scientists = data;
       $scope.loading = false;
 		});
 });
@@ -34,9 +34,9 @@ scientistsApp.controller('listController', function($scope, $http){
 // retrieve one scientist in the scope
 scientistsApp.controller('detailController', function($scope, $http, $routeParams){
   $scope.loading = true;
-  $http.get('../../dataset.json')
+  $http.get('/api/scientists/'+$routeParams.id)
 		.success(function(data) {
-			$scope.scientist = data.instances[$routeParams.id];
+			$scope.scientist = data;
       $scope.loading = false;
 		});
 });
