@@ -73,24 +73,30 @@ scientistsApp.controller('fieldController', function($scope, $http, $filter){
       })
      $scope.fields = {};
       for (var elem of filterData){
-        if(elem.charCodeAt(0) > 47 && elem.charCodeAt(0) < 58){
-          if (!$scope.fields['0-9']){
-            $scope.fields['0-9'] = new Array();
-          }
-          $scope.fields['0-9'].push(elem);
-        }else{
-          if(elem.charCodeAt(0) > 64 && elem.charCodeAt(0) < 91){
+        if(elem.charCodeAt(0)){
+          if(elem.charCodeAt(0) > 47 && elem.charCodeAt(0) < 58){
+            if (!$scope.fields['0-9']){
+              $scope.fields['0-9'] = new Array();
+            }
+            $scope.fields['0-9'].push(elem);
+          }else{
             if (!$scope.fields[elem.charAt(0)]){
               $scope.fields[elem.charAt(0)] = new Array();
             }
             $scope.fields[elem.charAt(0)].push(elem);
-          } else{
-            if(elem.charCodeAt(0) > 96 && elem.charCodeAt(0) < 123){
-              if (!$scope.fields[String.fromCharCode(elem.charCodeAt(0)-32)]){
-                $scope.fields[String.fromCharCode(elem.charCodeAt(0)-32)] = new Array();
+            /*if(elem.charCodeAt(0) > 64 && elem.charCodeAt(0) < 91){
+              if (!$scope.fields[elem.charAt(0)]){
+                $scope.fields[elem.charAt(0)] = new Array();
               }
-              $scope.fields[String.fromCharCode(elem.charCodeAt(0)-32)].push(elem);
-            }
+              $scope.fields[elem.charAt(0)].push(elem);
+            } else{
+              if(elem.charCodeAt(0) > 96 && elem.charCodeAt(0) < 123){
+                if (!$scope.fields[String.fromCharCode(elem.charCodeAt(0)-32)]){
+                  $scope.fields[String.fromCharCode(elem.charCodeAt(0)-32)] = new Array();
+                }
+                $scope.fields[String.fromCharCode(elem.charCodeAt(0)-32)].push(elem);
+              }
+            }*/
           }
         }
       }
