@@ -2,6 +2,17 @@ html, body {
   background-image: url('./assets/bc.png');
   background-repeat: repeat;
 }
+
+.title-baner, .title-baner:active, .title-baner:focus, .title-baner.active{
+  width:100%;
+  display: block;
+  background-color: white;
+  margin-bottom: 20px;
+  decoration : none;
+  background-image: none;
+  border-style: solid;
+}
+
 .card {
   background: #f8f8f8;
   border-radius: 2px;

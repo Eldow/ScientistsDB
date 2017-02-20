@@ -1,5 +1,15 @@
 <loading-animation ng-if="loading"></loading-animation>
-
-<div ng-repeat="f in fields | orderBy">
-  <h1><a ng-href="#/fields/{{f}}">{{f}}</a></h1>
+<div class="row" ng-controller="fieldListController">
+  <div ng-repeat="(key, value) in fields ">
+      <button class="row title-baner" ng-click="categoryClicked(key)">{{key}}</button>
+      <div class="row">
+        <div ng-repeat="elem in value">
+          <a ng-if="isCategoryClicked(elem)" ng-href="#/fields/{{elem}}">
+            <div class="col-md-3">
+              <div class="card shadow">{{elem}}</div>
+            </div>
+          </a>
+        </div>
+      </div>
+  </div>
 </div>
