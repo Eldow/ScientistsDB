@@ -42,9 +42,38 @@ scientistsApp.controller('listController', function($scope, $http){
   $scope.loading = true;
   $http.get('/api/scientists')
 		.success(function(data) {
-			$scope.scientists = data;
+			var scientistsData = data;
+      $scope.clicked = "";
+      scientistsData.sort();
+      $scope.scientists = {};
+      for (var elem of scientistsData){
+        if(elem.label){
+          if(elem.label.charCodeAt(0)){
+            if(elem.label.charCodeAt(0) > 47 && elem.label.charCodeAt(0) < 58){
+              if (!$scope.scientists['0-9']){
+                $scope.scientists['0-9'] = new Array();
+              }
+              $scope.scientists['0-9'].push(elem);
+            }else{
+              if (!$scope.scientists[elem.label.charAt(0)]){
+                $scope.scientists[elem.label.charAt(0)] = new Array();
+              }
+              $scope.scientists[elem.label.charAt(0)].push(elem);
+            }
+          }
+        }
+
+      }
+      $scope.categoryClicked = function(key){
+        if($scope.clicked == key){
+          $scope.clicked = "";
+        }else{
+          $scope.clicked = key;
+        }
+      }
       $scope.loading = false;
 		});
+
 });
 
 // retrieve one scientist in the scope
@@ -52,7 +81,7 @@ scientistsApp.controller('detailController', function($scope, $http, $routeParam
   $scope.loading = true;
   $http.get('/api/scientists/'+$routeParams.id)
 		.success(function(data) {
-			$scope.scientist = data;
+      $scope.scientist = data;
       $scope.loading = false;
 		});
 });
@@ -66,63 +95,32 @@ scientistsApp.controller('fieldController', function($scope, $http, $filter){
         return $filter('cleanString')(elem);
       });
       $scope.clicked = "";
-      filterData.sort(function(a, b){
-        if(a < b) return -1;
-        if(a > b) return 1;
-        return 0;
-      })
-     $scope.fields = {};
-      for (var elem of filterData){
-        if(elem.charCodeAt(0)){
-          if(elem.charCodeAt(0) > 47 && elem.charCodeAt(0) < 58){
-            if (!$scope.fields['0-9']){
-              $scope.fields['0-9'] = new Array();
-            }
-            $scope.fields['0-9'].push(elem);
-          }else{
-            if (!$scope.fields[elem.charAt(0)]){
-              $scope.fields[elem.charAt(0)] = new Array();
-            }
-            $scope.fields[elem.charAt(0)].push(elem);
-            /*if(elem.charCodeAt(0) > 64 && elem.charCodeAt(0) < 91){
+      filterData.sort();
+       $scope.fields = {};
+        for (var elem of filterData){
+          if(elem.charCodeAt(0)){
+            if(elem.charCodeAt(0) > 47 && elem.charCodeAt(0) < 58){
+              if (!$scope.fields['0-9']){
+                $scope.fields['0-9'] = new Array();
+              }
+              $scope.fields['0-9'].push(elem);
+            }else{
               if (!$scope.fields[elem.charAt(0)]){
                 $scope.fields[elem.charAt(0)] = new Array();
               }
               $scope.fields[elem.charAt(0)].push(elem);
-            } else{
-              if(elem.charCodeAt(0) > 96 && elem.charCodeAt(0) < 123){
-                if (!$scope.fields[String.fromCharCode(elem.charCodeAt(0)-32)]){
-                  $scope.fields[String.fromCharCode(elem.charCodeAt(0)-32)] = new Array();
-                }
-                $scope.fields[String.fromCharCode(elem.charCodeAt(0)-32)].push(elem);
-              }
-            }*/
+            }
           }
         }
-      }
-
-      $scope.isCategoryClicked = function(elem){
-        if(($scope.clicked == "0-9") && (elem.charCodeAt(0) > 47 && elem.charCodeAt(0) < 58)){
-          return true;
-        }
-        if ($scope.clicked == elem.charAt(0) || $scope.clicked == elem.charAt(0).toUpperCase()){
-          return true;
-        }
-        return false;
-      }
-
-      $scope.categoryClicked = function(key){
-        console.log(key);
-        if($scope.clicked == key){
-          $scope.clicked = "";
-        }else{
-          $scope.clicked = key;
-        }
-      }
-
-			//$scope.fields = filterData;
-      $scope.loading = false;
+        $scope.loading = false;
 		});
+    $scope.categoryClicked = function(key){
+      if($scope.clicked == key){
+        $scope.clicked = "";
+      }else{
+        $scope.clicked = key;
+      }
+    }
 });
 
 // retrieve one scientist in the scope
@@ -130,21 +128,67 @@ scientistsApp.controller('fieldListController', function($scope, $http, $routePa
   $scope.loading = true;
   $http.get('/api/fields/'+$routeParams.label)
 		.success(function(data) {
-			$scope.scientists = data;
+      var scientistsData = data;
+      $scope.clicked = "";
+      scientistsData.sort();
+      $scope.scientists = {};
+      for (var elem of scientistsData){
+        if(elem.label){
+          if(elem.label.charCodeAt(0)){
+            if(elem.label.charCodeAt(0) > 47 && elem.label.charCodeAt(0) < 58){
+              if (!$scope.scientists['0-9']){
+                $scope.scientists['0-9'] = new Array();
+              }
+              $scope.scientists['0-9'].push(elem);
+            }else{
+              if (!$scope.scientists[elem.label.charAt(0)]){
+                $scope.scientists[elem.label.charAt(0)] = new Array();
+              }
+              $scope.scientists[elem.label.charAt(0)].push(elem);
+            }
+          }
+        }
+      }
       $scope.loading = false;
 		}
   );
-
+  $scope.categoryClicked = function(key){
+    if($scope.clicked == key){
+      $scope.clicked = "";
+    }else{
+      $scope.clicked = key;
+    }
+  }
 
 });
 
 // retrieves all the nationalities
-scientistsApp.controller('nationalityController', function($scope, $http){
+scientistsApp.controller('nationalityController', function($scope, $http, $filter){
 	$scope.loading = true;
 	  $http.get('/api/nationalities')
 		.success(function(data) {
-			$scope.nationalities = data;
-      $scope.loading = false;
+      var filterData = data.map(function(elem){
+        return $filter('cleanString')(elem);
+      });
+      $scope.clicked = "";
+      filterData.sort();
+       $scope.nationalities = {};
+        for (var elem of filterData){
+          if(elem.charCodeAt(0)){
+            if(elem.charCodeAt(0) > 47 && elem.charCodeAt(0) < 58){
+              if (!$scope.nationalities['0-9']){
+                $scope.nationalities['0-9'] = new Array();
+              }
+              $scope.nationalities['0-9'].push(elem);
+            }else{
+              if (!$scope.nationalities[elem.charAt(0)]){
+                $scope.nationalities[elem.charAt(0)] = new Array();
+              }
+              $scope.nationalities[elem.charAt(0)].push(elem);
+            }
+          }
+        }
+        $scope.loading = false;
 		});
 });
 
@@ -153,9 +197,36 @@ scientistsApp.controller('nationalityListController', function($scope, $http, $r
 	$scope.loading = true;
 	  $http.get('/api/nationalities/'+$routeParams.label)
 		.success(function(data) {
-			$scope.scientists = data;
+			var scientistsData = data;
+      $scope.clicked = "";
+      scientistsData.sort();
+      $scope.scientists = {};
+      for (var elem of scientistsData){
+        if(elem.label){
+          if(elem.label.charCodeAt(0)){
+            if(elem.label.charCodeAt(0) > 47 && elem.label.charCodeAt(0) < 58){
+              if (!$scope.scientists['0-9']){
+                $scope.scientists['0-9'] = new Array();
+              }
+              $scope.scientists['0-9'].push(elem);
+            }else{
+              if (!$scope.scientists[elem.label.charAt(0)]){
+                $scope.scientists[elem.label.charAt(0)] = new Array();
+              }
+              $scope.scientists[elem.label.charAt(0)].push(elem);
+            }
+          }
+        }
+      }
       $scope.loading = false;
 		});
+    $scope.categoryClicked = function(key){
+      if($scope.clicked == key){
+        $scope.clicked = "";
+      }else{
+        $scope.clicked = key;
+      }
+    }
 });
 
 // the loading animation component

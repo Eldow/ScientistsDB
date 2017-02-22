@@ -1,2 +1,220 @@
 <loading-animation ng-if="loading"></loading-animation>
-{{scientist}}
+<div class="container">
+  <div class="row col-md-6" ng-if="scientist.label">
+    <h1>{{scientist.label}}</h1>
+  </div>
+
+  <div class="row col-md-6">
+    <h3>
+      <span ng-if="scientist.knownFor_label.length > 0">
+        Known for
+        <span ng-repeat="knownFor in scientist.knownFor_label">
+          {{knownFor}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </span>
+      <span ng-if="scientist.field_label.length > 0">
+        (
+        <span ng-repeat="field in scientist.field_label">
+          {{field}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+        )
+      </span>
+    </h3>
+  </div>
+</div>
+
+<div class="container" ng-if="scientist.birthDate || scientist.birthPlace_label || scientist.deathDate || scientist.deathPlace_label ||
+                              scientist.deathCause_label.length > 0 || scientist.restingPlace_label.length > 0 || scientist.nationality_label.length > 0 ||
+                              scientist.citizenship_label.length > 0 || scientist.residence_label.length > 0">
+  <h4> General information</h4>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="col-md-6" ng-if="scientist.birthDate">
+        Birth date : {{scientist.birthDate | date :"MMM d, y"}}
+      </div>
+      <div class="col-md-6" ng-if="scientist.birthPlace_label">
+        Birth place : {{scientist.birthPlace_label}}
+      </div>
+      <div class="col-md-6" ng-if="scientist.deathDate">
+        Death date : {{scientist.deathDate | date :"MMM d, y"}}
+      </div>
+      <div class="col-md-6" ng-if="scientist.deathPlace_label">
+        Death place : {{scientist.deathPlace_label}}
+      </div>
+      <div class="col-md-6" ng-if="scientist.deathCause_label.length > 0">
+        Death cause :
+        <span ng-repeat="deathCause in scientist.deathCause_label">
+          {{deathCause}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+      <div class="col-md-6" ng-if="scientist.restingPlace_label.length > 0">
+        Resting place :
+        <span ng-repeat="restingPlace in scientist.restingPlace_label">
+          {{restingPlace}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+      <div class="col-md-6" ng-if="scientist.nationality_label.length > 0">
+        Nationality :
+        <span ng-repeat="nationality in scientist.nationality_label">
+          {{nationality}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+      <div class="col-md-6" ng-if="scientist.citizenship_label.length > 0">
+        Citizenship :
+        <span ng-repeat="citizenship in scientist.citizenship_label">
+          {{citizenship}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+      <div class="col-md-6" ng-if="scientist.residence_label.length > 0">
+        Residence :
+        <span ng-repeat="residence in scientist.residence_label">
+          {{residence}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container" ng-if="scientist.parent_label.length > 0 || scientist.spouse_label.length > 0 || scientist.child_label.length > 0">
+  <h4>Family</h4>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="col-md-6" ng-if="scientist.parent_label.length > 0">
+        Parent :
+        <span ng-repeat="parent in scientist.parent_label">
+          {{parent}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+      <div class="col-md-6" ng-if="scientist.spouse_label.length > 0">
+        Spouse :
+        <span ng-repeat="spouse in scientist.spouse_label">
+          {{spouse}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+      <div class="col-md-6" ng-if="scientist.child_label.length > 0">
+        Child :
+        <span ng-repeat="child in scientist.child_label">
+          {{child}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container" ng-if="scientist.institution_label.length > 0 || scientist.education_label.length > 0 || scientist.almaMater_label.length > 0">
+  <h4>Education</h4>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="col-md-6" ng-if="scientist.institution_label.length > 0">
+        Institution :
+        <span ng-repeat="institution in scientist.institution_label">
+          {{institution}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+      <div class="col-md-6" ng-if="scientist.education_label.length > 0">
+        Education :
+        <span ng-repeat="education in scientist.education_label">
+          {{education}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+      <div class="col-md-6" ng-if="scientist.almaMater_label.length > 0">
+        Alma Mater :
+        <span ng-repeat="almaMater in scientist.almaMater_label">
+          {{almaMater}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container" ng-if="scientist.award_label.length > 0">
+  <h4>Recognition</h4>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="col-md-6" ng-if="scientist.award_label.length > 0">
+        Award :
+        <span ng-repeat="award in scientist.award_label">
+          {{award}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container" ng-if="scientist.relation_label.length > 0 || scientist.employer_label.length > 0 || scientist.influencedBy_label.length > 0 ||
+                              scientist.influenced_label.length > 0 || scientist.notableStudent_label.length > 0 || scientist.doctoralStudent_label.length > 0 ||
+                              scientist.academicAdvisor_label.length > 0 || scientist.doctoralAdvisor_label.length > 0">
+  <h4>Entourage</h4>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="col-md-6" ng-if="scientist.relation_label.length > 0">
+        Relation :
+        <span ng-repeat="relation in scientist.relation_label">
+          {{relation}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+      <div class="col-md-6" ng-if="scientist.employer_label.length > 0">
+        Employer :
+        <span ng-repeat="employer in scientist.employer_label">
+          {{employer}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+      <div class="col-md-6" ng-if="scientist.influencedBy_label.length > 0">
+        Influenced By :
+        <span ng-repeat="influencedBy in scientist.influencedBy_label">
+          {{influencedBy}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+      <div class="col-md-6" ng-if="scientist.influenced_label.length > 0">
+        Influenced :
+        <span ng-repeat="influence in scientist.influenced_label">
+          {{influence}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+      <div class="col-md-6" ng-if="scientist.notableStudent_label.length > 0">
+        Notable student :
+        <span ng-repeat="notableStudent in scientist.notableStudent_label">
+          {{notableStudent}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+      <div class="col-md-6" ng-if="scientist.doctoralStudent_label.length > 0">
+        Doctoral student :
+        <span ng-repeat="doctoralStudent in scientist.doctoralStudent_label">
+          {{doctoralStudent}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+      <div class="col-md-6" ng-if="scientist.academicAdvisor_label.length > 0">
+        Academic advisor :
+        <span ng-repeat="academicAdvisor in scientist.academicAdvisor_label">
+          {{academicAdvisor}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+      <div class="col-md-6" ng-if="scientist.doctoralAdvisor_label.length > 0">
+        Doctoral advisor :
+        <span ng-repeat="doctoralAdvisor in scientist.doctoralAdvisor_label">
+          {{doctoralAdvisor}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container" ng-if="scientist.occupation_label.length > 0 || scientist.soundRecording_label.length > 0">
+  <h4>Other</h4>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="col-md-6" ng-if="scientist.occupation_label.length > 0">
+        Occupation :
+        <span ng-repeat="occupation in scientist.occupation_label">
+          {{occupation}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+      <div class="col-md-6" ng-if="scientist.soundRecording_label.length > 0">
+        Sound recording :
+        <span ng-repeat="soundRecording in scientist.soundRecording_label">
+          {{soundRecording}}<span ng-if="$middle || ($first && !$last)">, </span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -3,6 +3,10 @@ html, body {
   background-repeat: repeat;
 }
 
+.dropdown-toggle{
+  cursor:pointer;
+}
+
 .title-baner, .title-baner:active, .title-baner:focus, .title-baner.active{
   width:100%;
   display: block;
