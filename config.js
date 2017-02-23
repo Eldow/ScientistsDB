@@ -35,6 +35,7 @@ scientistsApp.config(function($routeProvider){
 
 // main page controller
 scientistsApp.controller('mainController', ['$scope','$http', function($scope, $http) {
+  $scope.search="";
 }]);
 
 // retrieve all scientists in the scope

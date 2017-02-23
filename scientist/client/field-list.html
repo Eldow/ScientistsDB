@@ -8,7 +8,7 @@
       <button class="title-baner" ng-click="categoryClicked(key)">{{key}}</button>
     </div>
     <div class="row" ng-if="clicked==key">
-      <div ng-repeat="elem in value">
+      <div ng-repeat="elem in value | filter:search">
         <a ng-href="#/fields/{{elem}}">
           <div class="col-md-3">
             <div class="card shadow"><h3>{{elem}}</h3></div>
