@@ -1,14 +1,14 @@
 <loading-animation ng-if="loading"></loading-animation>
 <div class="row" ng-controller="nationalityListController">
   <div ng-repeat="(key, value) in nationalities ">
-    <div class="col-md-3" ng-if="clicked!=key">
+    <div class="col-md-3" ng-if="clicked!=key && !search">
       <button class="title-baner" ng-click="categoryClicked(key)">{{key}}</button>
     </div>
-    <div class="col-md-12" ng-if="clicked==key">
+    <div class="col-md-12" ng-if="clicked==key && !search">
       <button class="title-baner" ng-click="categoryClicked(key)">{{key}}</button>
     </div>
-    <div class="row" ng-if="clicked==key">
-      <div ng-repeat="elem in value">
+    <div class="row" ng-if="clicked==key || search">
+      <div ng-repeat="elem in value | filter:search">
         <a ng-href="#/nationalities/{{elem}}">
           <div class="col-md-3">
             <div class="card shadow"><h3>{{elem}}</h3></div>

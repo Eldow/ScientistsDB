@@ -23,7 +23,6 @@
           <a class="navbar-brand" href="#"><i class="fa fa-flask"></i> ScientistsDB</a>
         </div>
           <ul class="nav navbar-nav">
-            <li><a href="#/search"><i class="fa fa-search"></i> Advanced Search</a></li>
             <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-tags"></i> Categories
               <span class="caret"></span></a>
@@ -36,9 +35,8 @@
           </ul>
           <form class="navbar-form navbar-left">
             <div class="form-group">
-              <input type="text" class="form-control" placeholder="Quick Search">
+              <input type="text" class="form-control" placeholder="Quick Search" ng-model="search">
             </div>
-            <button type="submit" class="btn btn-default">Submit</button>
           </form>
       </div><!-- /.container-fluid -->
     </nav>
