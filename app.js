@@ -5,10 +5,10 @@ var morgan = require('morgan');                         				// log requests to t
 var bodyParser = require('body-parser');                				// pull information from HTML POST (express4)
 var router = express.Router();                          				// use express for routing
 var Agenda = require('agenda');																	// use agenda for task scheduling
-
+var sparql = require('sparql');                                 // use sparql for data retrieving
+var request = require('request');
 // Datamodels related
 var Scientist = require('./scientist/server/model.js');
-var dataset = require('./dataset.json');
 
 var mongoConnectionString = "mongodb://127.0.0.1:27017/";
 
@@ -22,40 +22,103 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse applica
 require('./scientist/server/routes.js')(app);										// load the api
 
 var agenda = new Agenda({db: {address: mongoConnectionString+'agenda'}});// connect to mongo
+var client = new sparql.Client('http://dbpedia.org/sparql');
+
 agenda.define('refresh the database', function(job, done) {
   RefreshDatabase();
 });
-
+RefreshDatabase();
 function RefreshDatabase(){
-	// Drop the collection
-	mongoose.connection.collections['scientists'].drop(function(err, result) {
-		console.log("Collection dropped");
-	});
+  //CleanDatabase();
+  //QueryAtAllOffset('rdfs:label', 'label', false);
+  QueryAtAllOffset('ontology:thumbnail', 'thumbnail', false);
+  //QueryAtAllOffset('rdfs:comment', 'description', false);
+  QueryAtAllOffset('ontology:birthDate', 'birthDate', false);
+  QueryAtAllOffset('ontology:deathDate', 'deathDate', false);
+  /*QueryAtAllOffset('ontology:birthPlace/rdfs:label', 'birthPlace_label', true);
+  QueryAtAllOffset('ontology:deathPlace/rdfs:label', 'deathPlace_label', true);
+  QueryAtAllOffset('ontology:field/rdfs:label', 'field_label', true);
+  QueryAtAllOffset('ontology:doctoralAdvisor/rdfs:label', 'doctoralAdvisor_label', true);
+  QueryAtAllOffset('ontology:academicAdvisor/rdfs:label', 'academicAdvisor_label', true);
+  QueryAtAllOffset('ontology:knownFor/rdfs:label', 'knownFor_label', true);
+  QueryAtAllOffset('ontology:spouse/rdfs:label', 'spouse_label', true);
+  QueryAtAllOffset('ontology:award/rdfs:label', 'award_label', true);
+  QueryAtAllOffset('ontology:citizenship/rdfs:label', 'citizenship_label', true);
+  QueryAtAllOffset('ontology:almaMater/rdfs:label', 'almaMater_label', true);
+  QueryAtAllOffset('ontology:residence/rdfs:label', 'residence_label', true);
+  QueryAtAllOffset('ontology:influenced/rdfs:label', 'influenced_label', true);*/
+}
 
-	// Clean data set - TODO : Improve this after SPARQL course
-	var cleanDataset = [];
-	for(let elem of dataset){
-		for(let key in elem){
-			for(var value in elem[key]){
-				if(elem[key][value] == "NULL" || !(value == "label" || value == "description" || value == "birthDate" || value == "deathDate" || value == "birthPlace_label" || value == "deathPlace_label" || value == "field_label" || value == "doctoralAdvisor_label" ||
-					value == "notableStudent_label" || value == "academicAdvisor_label" || value == "knownFor_label" || value == "doctoralStudent_label" || value == "spouse_label" || value == "child_label" || value == "influencedBy_label" || value == "influenced_label" ||
-					value == "education_label" || value == "occupation_label" || value == "award_label" || value == "citizenship_label" || value == "almaMater_label" || value == "nationality_label" || value == "soundRecording_label" ||
-					value == "institution_label" || value == "residence_label" || value == "deathCause_label" || value == "restingPlace_label" || value == "relation_label" || value == "employer_label" || value == "parent_label")){
-						delete elem[key][value];
-					}
-				}
-				cleanDataset.push(elem[key]);
-		}
-	}
+function QueryAtAllOffset(type, model, isArray){
+  if(!isArray){
+    QueryField(type, model, 0);
+    QueryField(type, model, 10000);
+    QueryField(type, model, 20000);
+  } else {
+    QueryArray(type, model, 0);
+    QueryArray(type, model, 10000);
+    QueryArray(type, model, 20000);
+  }
+}
 
-	// Insert dataset in mongodb
-	mongoose.connection.collections['scientists'].insertMany(cleanDataset, function(err,r) {
-		if (err) {
-	     console.log(err);
-	   } else {
-	     console.log("Insert ok");
-	   }
-	})
+function QueryField(type, model, offset){
+  if(type.includes('thumbnail') || type.includes('birthDate') || type.includes('deathDate')){
+    client.query(
+    'PREFIX ontology: <http://dbpedia.org/ontology/> ' +
+    'SELECT ?scientist (SAMPLE(?' + model + ') AS ?' + model + ') WHERE{ ?scientist a ontology:Scientist . ' +
+    '?scientist ' + type + ' ?' + model + ' . ' +
+    '} GROUP BY ?scientist LIMIT 10000 OFFSET ' + offset + '', function(err, res){
+      UpdateScientist(res.results.bindings, model, false, 0)
+    });
+  } else {
+    client.query(
+    'PREFIX ontology: <http://dbpedia.org/ontology/> ' +
+    'SELECT ?scientist (SAMPLE(?' + model + ') AS ?' + model + ') WHERE{ ?scientist a ontology:Scientist . ' +
+    '?scientist ' + type + ' ?' + model + ' . ' +
+    'FILTER(lang(?' + model + ') = "en") . ' +
+    '} GROUP BY ?scientist LIMIT 10000 OFFSET ' + offset + '', function(err, res){
+      UpdateScientist(res.results.bindings, model, false, 0)
+    });
+  }
+}
+
+function QueryArray(type, model, offset){
+  client.query(
+  'PREFIX ontology: <http://dbpedia.org/ontology/> ' +
+  'SELECT ?scientist (group_concat(distinct ?' + model + ';separator="|") AS ?' + model + ') WHERE{ ?scientist a ontology:Scientist . ' +
+  '?scientist ' + type + ' ?' + model + ' . ' +
+  'FILTER(lang(?' + model + ') = "en") . ' +
+  '} GROUP BY ?scientist LIMIT 10000 OFFSET ' + offset + '', function(err, res){
+    UpdateScientist(res.results.bindings, model, true, 0)
+  });
+}
+
+function UpdateScientist(dataset, fieldName, isArray, count){
+  if(count >= dataset.length) {
+    console.log("done");
+    return;
+  }
+  if(dataset.length <= 0) return;
+  var result = dataset[count];
+  var uri = { 'uri': result.scientist.value }
+  if(isArray){
+    data = { [fieldName]: result[fieldName].value.split('|') };
+  } else {
+    data = { [fieldName]: result[fieldName].value };
+  }
+  Scientist.findOneAndUpdate(uri, {'$set':data}, {upsert:true}, function(err, doc){
+    if (err) console.log("ERROR WHILE INSERTING :" + JSON.stringify(data, null, 4));
+    console.log("INSERT" + count);
+    count++;
+    UpdateScientist(dataset, fieldName, isArray, count)
+  });
+
+}
+
+function CleanDatabase(){
+  mongoose.connection.collections['scientists'].drop(function(err, result) {
+    console.log("Collection dropped");
+  });
 }
 
 agenda.on('ready', function() {
@@ -71,3 +134,30 @@ app.get('/', function(req, res){																// server entry point
 app.listen(8080);																								// run on port 8080
 
 console.log("App listening on port 8080");
+
+
+/*
+// Clean data set
+var cleanDataset = [];
+for(let elem of dataset){
+  for(let key in elem){
+    for(var value in elem[key]){
+      if(elem[key][value] == "NULL" || !(value == "label" || value == "description" || value == "birthDate" || value == "deathDate" || value == "birthPlace_label" || value == "deathPlace_label" || value == "field_label" || value == "doctoralAdvisor_label" ||
+        value == "notableStudent_label" || value == "academicAdvisor_label" || value == "knownFor_label" || value == "doctoralStudent_label" || value == "spouse_label" || value == "child_label" || value == "influencedBy_label" || value == "influenced_label" ||
+        value == "education_label" || value == "occupation_label" || value == "award_label" || value == "citizenship_label" || value == "almaMater_label" || value == "nationality_label" || value == "soundRecording_label" ||
+        value == "institution_label" || value == "residence_label" || value == "deathCause_label" || value == "restingPlace_label" || value == "relation_label" || value == "employer_label" || value == "parent_label")){
+          delete elem[key][value];
+        }
+      }
+      cleanDataset.push(elem[key]);
+  }
+}
+
+// Insert dataset in mongodb
+mongoose.connection.collections['scientists'].insertMany(cleanDataset, function(err,r) {
+  if (err) {
+     console.log(err);
+   } else {
+     console.log("Insert ok");
+   }
+})*/

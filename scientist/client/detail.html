@@ -1,10 +1,12 @@
 <loading-animation ng-if="loading"></loading-animation>
 <div class="container">
-  <div class="row col-md-6" ng-if="scientist.label">
+  <div class="row col-md-4" ng-if="scientist.label">
     <h1>{{scientist.label}}</h1>
+    <div class="row-col-md-12">
+      <img class="img-responsive" ng-if="scientist.thumbnail" ng-src="{{scientist.thumbnail}}"></img>
+    </div>
   </div>
-
-  <div class="row col-md-6">
+  <div class="row col-md-8" style="vertical-align:middle">
     <h3>
       <span ng-if="scientist.knownFor_label.length > 0">
         Known for
@@ -32,14 +34,14 @@
       <div class="col-md-6" ng-if="scientist.birthDate">
         Birth date : {{scientist.birthDate | date :"MMM d, y"}}
       </div>
-      <div class="col-md-6" ng-if="scientist.birthPlace_label">
-        Birth place : {{scientist.birthPlace_label}}
+      <div class="col-md-6" ng-if="scientist.birthPlace_label.length > 0">
+        Birth place : <span ng-repeat="birthPlace in scientist.birthPlace_label"> {{ birthPlace }} </span>
       </div>
       <div class="col-md-6" ng-if="scientist.deathDate">
         Death date : {{scientist.deathDate | date :"MMM d, y"}}
       </div>
-      <div class="col-md-6" ng-if="scientist.deathPlace_label">
-        Death place : {{scientist.deathPlace_label}}
+      <div class="col-md-6" ng-if="scientist.deathPlace_label.length > 0">
+        Death place : <span ng-repeat="deathPlace in scientist.deathPlace_label"> {{ deathPlace }} </span>
       </div>
       <div class="col-md-6" ng-if="scientist.deathCause_label.length > 0">
         Death cause :

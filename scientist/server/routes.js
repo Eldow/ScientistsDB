@@ -26,7 +26,7 @@ module.exports = function (app) {
 
     // GET all nationalities
     app.get('/api/nationalities', function (req, res) {
-        Scientist.find().distinct('nationality_label', function (err, nationalities) {
+        Scientist.find().distinct('citizenship_label', function (err, nationalities) {
             if (err) {
               res.send(err);
             }
@@ -36,7 +36,7 @@ module.exports = function (app) {
 
     // GET scientists by nationality
     app.get('/api/nationalities/:label', function (req, res) {
-        Scientist.find({'nationality_label':req.params.label}, function (err, scientists) {
+        Scientist.find({'citizenship_label':req.params.label}, function (err, scientists) {
             if (err) {
               res.send(err);
             }
