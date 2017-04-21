@@ -5,8 +5,7 @@ var morgan = require('morgan');                         				// log requests to t
 var bodyParser = require('body-parser');                				// pull information from HTML POST (express4)
 var router = express.Router();                          				// use express for routing
 var Agenda = require('agenda');																	// use agenda for task scheduling
-var sparql = require('sparql');                                 // use sparql for data retrieving
-var request = require('request');
+var sparql = require('sparql');                                 // use sparql for data retrieving                   
 // Datamodels related
 var Scientist = require('./scientist/server/model.js');
 
@@ -27,15 +26,14 @@ var client = new sparql.Client('http://dbpedia.org/sparql');
 agenda.define('refresh the database', function(job, done) {
   RefreshDatabase();
 });
-RefreshDatabase();
+
 function RefreshDatabase(){
-  //CleanDatabase();
-  //QueryAtAllOffset('rdfs:label', 'label', false);
+  QueryAtAllOffset('rdfs:label', 'label', false);
   QueryAtAllOffset('ontology:thumbnail', 'thumbnail', false);
-  //QueryAtAllOffset('rdfs:comment', 'description', false);
+  QueryAtAllOffset('rdfs:comment', 'description', false);
   QueryAtAllOffset('ontology:birthDate', 'birthDate', false);
   QueryAtAllOffset('ontology:deathDate', 'deathDate', false);
-  /*QueryAtAllOffset('ontology:birthPlace/rdfs:label', 'birthPlace_label', true);
+  QueryAtAllOffset('ontology:birthPlace/rdfs:label', 'birthPlace_label', true);
   QueryAtAllOffset('ontology:deathPlace/rdfs:label', 'deathPlace_label', true);
   QueryAtAllOffset('ontology:field/rdfs:label', 'field_label', true);
   QueryAtAllOffset('ontology:doctoralAdvisor/rdfs:label', 'doctoralAdvisor_label', true);
@@ -46,7 +44,7 @@ function RefreshDatabase(){
   QueryAtAllOffset('ontology:citizenship/rdfs:label', 'citizenship_label', true);
   QueryAtAllOffset('ontology:almaMater/rdfs:label', 'almaMater_label', true);
   QueryAtAllOffset('ontology:residence/rdfs:label', 'residence_label', true);
-  QueryAtAllOffset('ontology:influenced/rdfs:label', 'influenced_label', true);*/
+  QueryAtAllOffset('ontology:influenced/rdfs:label', 'influenced_label', true);
 }
 
 function QueryAtAllOffset(type, model, isArray){
@@ -108,7 +106,6 @@ function UpdateScientist(dataset, fieldName, isArray, count){
   }
   Scientist.findOneAndUpdate(uri, {'$set':data}, {upsert:true}, function(err, doc){
     if (err) console.log("ERROR WHILE INSERTING :" + JSON.stringify(data, null, 4));
-    console.log("INSERT" + count);
     count++;
     UpdateScientist(dataset, fieldName, isArray, count)
   });
@@ -134,30 +131,3 @@ app.get('/', function(req, res){																// server entry point
 app.listen(8080);																								// run on port 8080
 
 console.log("App listening on port 8080");
-
-
-/*
-// Clean data set
-var cleanDataset = [];
-for(let elem of dataset){
-  for(let key in elem){
-    for(var value in elem[key]){
-      if(elem[key][value] == "NULL" || !(value == "label" || value == "description" || value == "birthDate" || value == "deathDate" || value == "birthPlace_label" || value == "deathPlace_label" || value == "field_label" || value == "doctoralAdvisor_label" ||
-        value == "notableStudent_label" || value == "academicAdvisor_label" || value == "knownFor_label" || value == "doctoralStudent_label" || value == "spouse_label" || value == "child_label" || value == "influencedBy_label" || value == "influenced_label" ||
-        value == "education_label" || value == "occupation_label" || value == "award_label" || value == "citizenship_label" || value == "almaMater_label" || value == "nationality_label" || value == "soundRecording_label" ||
-        value == "institution_label" || value == "residence_label" || value == "deathCause_label" || value == "restingPlace_label" || value == "relation_label" || value == "employer_label" || value == "parent_label")){
-          delete elem[key][value];
-        }
-      }
-      cleanDataset.push(elem[key]);
-  }
-}
-
-// Insert dataset in mongodb
-mongoose.connection.collections['scientists'].insertMany(cleanDataset, function(err,r) {
-  if (err) {
-     console.log(err);
-   } else {
-     console.log("Insert ok");
-   }
-})*/
